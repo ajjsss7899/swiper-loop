@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<title>타이틀</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="swiper.min.css">
+<script src="swiper.js"></script>
+
+<style>
+* {margin: 0;padding: 0;box-sizing: border-box;}
+ul, li {list-style: none;}
+
+.slider {overflow: hidden;max-width: 1180px;margin: 0 auto;}
+.slide_list > li {width: 20%;height: 150px;text-align: center;background: #ddd;}
+</style>
+</head>
+<body>
+<div class="slider">
+    <ul class="swiper-wrapper slide_list">
+        <li class="swiper-slide">slider1</li>
+        <li class="swiper-slide">slider2</li>
+        <li class="swiper-slide">slider3</li>
+        <li class="swiper-slide">slider4</li>
+    </ul>
+</div>
+
+<script>
+    $(document).ready(function () {
+        slider();
+    })
+
+    function slider() {
+        var winW = $(window).width(); //화면 가로사이즈
+        var swiper = undefined;
+        var viewNum = ''; //슬라이드 개수 (옵션)
+        var loopChk = ''; //무한반복 체크
+        var slideNum = $('.slider .swiper-slide').length //슬라이드 총 개수
+        var slideInx = 0; //현재 슬라이드 index
+
+        //디바이스 체크
+        var winWChk = ''; 
+        if ($(window).width() > 768){ //PC 버전
+            winWChk = 'pc';
+        }else{ //mobile 버전
+            winWChk = 'mo';
+        }
+
+        sliderAct(); //슬라이드 실행
+
+        $(window).on('resize', function () {
+            winW = $(window).width();
+            if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
+                winWChk = 'mo'
+                sliderAct();
+            }
+
+            if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
+                winWChk = 'pc'
+                sliderAct();
+            }
+        })
+
+        function sliderAct(){
+            //슬라이드 초기화 
+            if (swiper != undefined){ 
+                swiper.destroy();
+                swiper = undefined;
+            }
+
+            //slidesPerView 옵션 설정
+            if (winW > 768){ //PC 버전
+                viewNum = 5;
+            }else{ //mobile 버전
+                viewNum = 2.3;
+            }
+            
+            //loop 옵션 체크
+            if (slideNum > viewNum){
+                loopChk = true;
+            }else{ 
+                loopChk = false;
+            }
+            
+            swiper = new Swiper(".slider", {
+                slidesPerView: viewNum,
+                initialSlide :slideInx,
+                spaceBetween: 10,
+                loop: loopChk,
+                autoplay: {
+                    delay: 2000,
+                },
+                on: {
+                    activeIndexChange: function () {
+                        slideInx = this.realIndex; //현재 슬라이드 index 갱신
+                    }
+                },
+            });
+        }
+    }
+</script>
+</body>
+</html>
